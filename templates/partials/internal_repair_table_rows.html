@@ -1,0 +1,67 @@
+<!-- Partial template para filas de reparaciones internas (usado en requests AJAX) -->
+{% for ticket in repairs %}
+<tr class="align-middle" data-status="{{ ticket.state }}" data-city="{{ ticket.city }}" data-ticket-id="{{ ticket.id_ticket }}">
+    <td class="ps-2 fw-bold">#{{ ticket.id_ticket }}</td>
+    <td class="multiline-cell" title="{{ ticket.reference }}">
+        {{ ticket.reference | replace("SEMINUEVO", "") | replace("Seminuevo", "") | replace("seminuevo", "") | trim }}
+    </td>
+    <td class="multiline-cell">
+        {% if ticket.technical_name %}
+        <span title="{{ ticket.technical_name.replace('.', ' ') | title }}">
+            {{ ticket.technical_name.replace('.', ' ') | title }}
+        </span>
+        {% else %}
+        <span class="badge bg-secondary">Sin asignar</span>
+        {% endif %}
+    </td>
+    <td>
+        <select class="form-select form-select-sm status-select" 
+                data-ticket-id="{{ ticket.id_ticket }}" 
+                data-previous-status="{{ ticket.state }}" 
+                name="status">
+            {% for status in ['Sin asignar', 'Asignado', 'En proceso', 'En Revision', 'Terminado'] %}
+            <option value="{{ status }}" {% if ticket.state == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+    </td>
+    <td>
+        <span class="badge {% if ticket.priority == 'Alta' %}bg-danger{% elif ticket.priority == 'Media' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+            {{ ticket.priority }}
+        </span>
+    </td>
+    <td class="text-end">${{ "{:,.0f}".format(ticket.service_value).replace(',', '.') }}</td>
+    <td class="text-end">${{ "{:,.0f}".format(ticket.spare_value).replace(',', '.') }}</td>
+    <td class="text-end"><span class="badge bg-primary fs-6">${{ "{:,.0f}".format(ticket.total).replace(',', '.') }}</span></td>
+    <td class="text-end">
+        <span class="badge bg-secondary">{{ ticket.city }}</span>
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('internal_repair.edit_tickets_RI', repair_id=ticket.id_repair) }}"
+            class="btn btn-sm btn-outline-secondary {% if ticket.state in ['Terminado'] %}disabled{% endif %}" 
+            {% if ticket.state in ['Terminado'] %}
+                aria-disabled="true"
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="No se puede editar un ticket en estado {{ ticket.state }}"
+            {% endif %}>
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="{{ url_for('internal_repair.detail_RI', repair_id=ticket.id_repair) }}"
+               class="btn btn-sm btn-outline-info">
+                <i class="fas fa-eye"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{% else %}
+<tr id="noResultsRow">
+    <td colspan="10" class="text-center py-5">
+        <i class="fas fa-tools fa-3x mb-3 text-muted"></i>
+        <p class="text-muted">No hay reparaciones internas que coincidan con los filtros aplicados.</p>
+        <a href="{{ url_for('tickets.internal_repair.create_ticketsRI') }}" class="btn btn-secondary">
+            <i class="fas fa-plus me-1 text-white"></i> Crear nueva reparación
+        </a>
+    </td>
+</tr>
+{% endfor %} 

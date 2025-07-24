@@ -1,0 +1,523 @@
+:root {
+  --color-primario: #60A5FA;       /* Celeste (color principal) */
+  --color-secundario: #000000;    /* Azul marino (para contrastes) */
+  --color-fondo: #F3F4F6;         /* Gris neutro (fondo) */
+  --color-texto: #000000;         /* Negro (texto principal) */
+  --color-blanco: #FFFFFF;
+  --color-gris: #8b8d8b;    /* Blanco (texto y elementos claros) */
+  --sombra: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+body {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+/* Ajustes para maximizar el espacio de la tabla */
+.container-fluid {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+.card {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  border-radius: 0.25rem;
+}
+
+.table-container {
+  background-color: var(--color-blanco);
+  border-radius: 8px;
+  box-shadow: var(--sombra);
+  padding: 20px;
+}
+
+/* Ajustes para la tabla */
+.table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.table th {
+  white-space: nowrap;
+  padding: 0.5rem !important;
+}
+
+.table td {
+  padding: 0.5rem !important;
+}
+
+/* Columna ID */
+.table th:first-child, 
+.table td:first-child {
+  width: 5% !important;
+  min-width: 60px !important;
+}
+
+/* Columna Documento */
+.table th:nth-child(2), 
+.table td:nth-child(2) {
+  width: 10% !important;
+  min-width: 80px !important;
+}
+
+/* Columna Técnico */
+.table th:nth-child(3), 
+.table td:nth-child(3) {
+  width: 15% !important;
+  min-width: 100px !important;
+}
+
+/* Columna Estado */
+.table th:nth-child(4), 
+.table td:nth-child(4) {
+  width: 14% !important;
+  min-width: 130px !important;
+}
+
+/* Valores y totales - columnas más estrechas */
+.table th:nth-child(6),
+.table td:nth-child(6),
+.table th:nth-child(7), 
+.table td:nth-child(7),
+.table th:nth-child(8), 
+.table td:nth-child(8) {
+  width: 8% !important;
+  min-width: 80px !important;
+  text-align: right;
+}
+
+/* Columna acciones */
+.table th:last-child,
+.table td:last-child {
+  width: 10% !important;
+  min-width: 100px !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--color-primario);
+  color: var(--color-blanco);
+  cursor: pointer;
+}
+
+.status-badge {
+  padding: 0.4em 0.6em;
+  font-size: 0.75em;
+  border-radius: 4px;
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+  text-align: center;
+}
+
+.action-icons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.action-icons button {
+  background-color: var(--color-primario);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: var(--color-blanco);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.action-icons button i {
+  font-size: 1.2em;
+}
+
+.action-icons button:hover {
+  background-color: var(--color-secundario);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-icons button:active {
+  transform: translateY(0);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bulk-actions {
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: var(--color-primario);
+}
+
+#searchInput {
+  max-width: 300px;
+  padding: 8px;
+  border: 1px solid var(--color-primario);
+  border-radius: 4px;
+  outline: none;
+}
+
+#searchInput:focus {
+  box-shadow: 0 0 5px var(--color-secundario);
+}
+
+/* 🔍 ESTILOS PARA BOTONES DE BÚSQUEDA */
+.search-button {
+  background-color: var(--color-primario) !important;
+  border-color: var(--color-primario) !important;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: var(--color-secundario) !important;
+  border-color: var(--color-secundario) !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.clear-search-button {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.clear-search-button:hover {
+  background-color: #495057 !important;
+  border-color: #495057 !important;
+  transform: scale(1.05);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .input-group {
+    max-width: 100% !important;
+  }
+  
+  .search-button, .clear-search-button {
+    min-width: 45px;
+  }
+}
+
+/* Estilos para la sección de subida de imágenes */
+.preview-image-container img {
+    height: 150px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.remove-image {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#previewContainer {
+    min-height: 50px;
+}
+
+/* Estilos para los botones de subida de imágenes */
+.image-upload-section .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-upload-section .form-control[type="file"] {
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+}
+
+.image-upload-section .form-control[type="file"]:hover {
+    background-color: var(--color-fondo);
+}
+
+/* Mejora de estilos responsivos para la tabla */
+@media (max-width: 992px) {
+  .container-fluid {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.4rem !important;
+  }
+}
+
+/* Ajustes para que la tabla ocupe todo el espacio posible */
+.table-responsive {
+  margin: 0;
+  padding: 0;
+}
+
+/* Ajuste del contenido a la pantalla completa */
+#content {
+  padding: 0.5rem;
+}
+
+/* Ajuste de los dropdowns de estado */
+/* Estilos mejorados para selects de estado */
+.status-select {
+  width: 100% !important;
+  min-width: 120px !important;
+  max-width: 160px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1.75rem 0.5rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  cursor: pointer !important;
+  background-color: #f8f9fa !important;
+  border: 1px solid #ced4da !important;
+  box-shadow: none !important;
+  text-overflow: ellipsis !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Colores para los diferentes estados */
+.status-select option[value="Sin asignar"],
+.status-select option[value="Asignado"],
+.status-select option[value="En proceso"],
+.status-select option[value="En Revision"],
+.status-select option[value="Terminado"] {
+  font-weight: 500 !important;
+  padding: 10px !important;
+}
+
+/* Removiendo estilos específicos por estado */
+/* Estilos para hover y focus */
+.status-select:hover {
+  background-color: #e9ecef !important;
+  border-color: #adb5bd !important;
+}
+
+.status-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+  border-color: #86b7fe !important;
+  background-color: #fff !important;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+  .status-select {
+    min-width: 100px !important;
+    max-width: 140px !important;
+    font-size: 0.85rem !important;
+    padding: 0.4rem 1.5rem 0.4rem 0.4rem !important;
+  }
+  
+  /* Aumentar el tamaño para mejorar la tactilidad en móviles */
+  .form-select-sm {
+    height: auto !important;
+    min-height: 38px !important;
+  }
+}
+
+/* Ajuste para el dropdown desplegado */
+.status-select option {
+  padding: 10px 5px !important;
+  font-size: 0.9rem !important;
+}
+
+/* Asegurar que los botones de filtro son grises */
+.btn-check:checked + .btn-outline-secondary, 
+.btn-check:checked + .btn-outline-primary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+
+.filter-active {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+
+/* Ajustes para la clase active en los botones de filtro */
+.btn-outline-secondary:hover,
+.btn-outline-primary:hover {
+  background-color: #5a6268 !important;
+  border-color: #545b62 !important;
+  color: #fff !important;
+}
+
+/* Asegurar que todos los iconos sean grises */
+.text-primary,
+i.text-primary,
+.fas.text-primary,
+.far.text-primary, 
+.fab.text-primary {
+  color: #6c757d !important;
+}
+
+/* Cambiar los badges primarios a grises */
+.badge.bg-primary {
+  background-color: #6c757d !important;
+}
+
+/* Estilos para el paginado */
+.pagination .page-item.active .page-link {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+
+.pagination .page-link {
+  color: #6c757d !important;
+}
+
+.pagination .page-link:hover {
+  background-color: #e9ecef !important;
+  border-color: #dee2e6 !important;
+  color: #5a6268 !important;
+}
+
+/* Estilos para los timestamps */
+.timestamp-container {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.timestamp {
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #fff;
+    border-left: 4px solid #6c757d;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.timestamp strong {
+    color: #495057;
+}
+
+.active-timestamp {
+    border-left-color: #28a745;
+    background-color: #f8fff9;
+}
+
+/* Colores específicos para cada estado */
+.assigned-timestamp.active-timestamp { border-left-color: #007bff; }
+.in_revision-timestamp.active-timestamp { border-left-color: #ffc107; }
+.in_progress-timestamp.active-timestamp { border-left-color: #17a2b8; }
+.finished-timestamp.active-timestamp { border-left-color: #28a745; }
+.received-timestamp.active-timestamp { border-left-color: #6f42c1; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timestamp-container {
+        flex-direction: column;
+    }
+    
+    .timestamp {
+        min-width: 100%;
+    }
+}
+
+/* Estilos para selects de repuestos */
+.form-select[name="spare_part_code[]"] {
+    max-width: calc(100% - 42px); /* Espacio para el botón de búsqueda */
+    height: 31px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Estilos para la línea de repuestos */
+.part-row .input-group {
+    display: flex;
+}
+
+/* Hacer los botones de repuestos más pequeños */
+.part-row .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Ajuste para hacer el select de repuestos más compacto */
+.select2-container--default .select2-selection--single {
+    height: 31px !important;
+    padding: 2px 8px !important;
+    font-size: 0.85rem !important;
+}
+
+/* Para que no se desborde el texto */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 25px !important;
+    padding-left: 6px !important;
+}
+
+/* Ajustar la flecha del dropdown */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 29px !important;
+    width: 20px !important;
+}
+
+/* Ajustes para el dropdown de resultados */
+.select2-container--default .select2-results__option {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+}
+
+/* Para el contenedor del Select2 */
+.select2-container {
+    display: inline-block;
+    max-width: calc(100% - 42px);
+}
+
+/* Estilos para el modal de búsqueda de repuestos */
+.search-results-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.search-results-container .card {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+}
+
+.search-results-container .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    border-color: #80bdff;
+}
+
+.search-results-container .badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.search-results-container .highlight {
+    background-color: #fff3cd;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-weight: bold;
+    color: #856404;
+}
+
+/* Estilos para los botones del modal */
+#searchPartsModal .modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+
+#searchPartsModal .modal-body {
+    padding: 1rem;
+}
+
+#searchPartsModal .modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem 1rem;
+}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Technical Service{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/technical_service.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/unified_search.css') }}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="container-fluid py-2 px-2">
+  <!-- Fila del título y búsqueda/nuevo ticket -->
+  <div class="row mb-2 align-items-center">
+    <div class="col-md-6">
+      <h2 class="mb-0">
+        <i class="fas fa-ticket-alt text-secondary me-2"></i>Gestión de Tickets Servicio Técnico
+      </h2>
+    </div>
+    <div class="col-md-6 d-flex flex-wrap justify-content-end align-items-center gap-2">
+      <!-- Barra de búsqueda compacta -->
+      <div class="input-group" style="max-width: 250px;">
+        <span class="input-group-text bg-light">
+          <i class="fas fa-search text-muted"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Buscar tickets..." id="searchInput"
+          aria-label="Buscar tickets">
+      </div>
+      <!-- Botón de nuevo ticket -->
+      <a href="{{ url_for('technical_service.create_ticket') }}" class="btn btn-success d-flex align-items-center">
+        <i class="fas fa-plus me-2"></i>Nuevo Ticket
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Filtros rápidos -->
+<div class="card mb-3 border-0 shadow-sm mx-2">
+  <div class="card-body py-2">
+    <div class="row">
+      <div class="col-12 mb-2">
+        <div class="d-flex gap-2 flex-wrap justify-content-center">
+          {% for status in ['Todos', 'Activos', 'Sin asignar', 'Asignado', 'En proceso', 'En Revision', 'Terminado'] %}
+          <input type="radio" class="btn-check" name="filterStatus" id="btn{{ status }}" {% if status=='Todos'
+            %}checked{% endif %}>
+          <label class="btn btn-outline-secondary" for="btn{{ status }}">
+            <i
+              class="fas fa-{% if status == 'Todos' %}list{% elif status == 'Activos' %}bolt{% elif status == 'Sin asignar' %}user-times{% elif status == 'Asignado' %}user-check{% elif status == 'En proceso' %}spinner{% elif status == 'En Revision' %}search{% else %}check-circle{% endif %} me-1"></i>
+            {{ status }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="d-flex gap-2 flex-wrap justify-content-center">
+          <input type="radio" class="btn-check" name="filterCity" id="btnAllCities" checked>
+          <label class="btn btn-outline-secondary" for="btnAllCities">
+            <i class="fas fa-globe me-1"></i>
+            Todas las ciudades
+          </label>
+          <input type="radio" class="btn-check" name="filterCity" id="btnMedellin">
+          <label class="btn btn-outline-secondary" for="btnMedellin">
+            <i class="fas fa-city me-1"></i>
+            Medellín
+          </label>
+          <input type="radio" class="btn-check" name="filterCity" id="btnBogota">
+          <label class="btn btn-outline-secondary" for="btnBogota">
+            <i class="fas fa-city me-1"></i>
+            Bogotá
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Tabla de tickets -->
+<div class="card shadow-sm border-0 mx-2">
+  <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+    <div>
+      <h3 class="mb-0">Listado de todos los tickets</h3>
+    </div>
+    <span class="badge bg-secondary rounded-pill py-2 px-3">
+      <i class="fas fa-ticket-alt me-2"></i>
+      Página {{ pagination.page }} de {{ pagination.pages }} | Total: <strong>{{ pagination.total }}</strong>
+    </span>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="ticketsTable">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-2">#</th>
+            <th>Documento</th>
+            <th>Técnico</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th class="text-end">V Serv.</th>
+            <th class="text-end">V Rep.</th>
+            <th class="text-end">Total</th>
+            <th>Ciudad</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="ticketsTableBody">
+          {% include 'partials/tickets_table_rows.html' %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer bg-white py-2 d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+      <small class="text-muted">
+        Mostrando {{ ((pagination.page - 1) * pagination.per_page + 1) if pagination.total > 0 else 0 }} 
+        a {{ pagination.page * pagination.per_page if pagination.page * pagination.per_page < pagination.total else pagination.total }} 
+        de <strong>{{ pagination.total }}</strong> tickets
+      </small>
+    </div>
+    
+    <!-- Paginación real -->
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Paginación de tickets">
+      <ul class="pagination pagination-sm mb-0" id="realPagination">
+        <!-- Página anterior -->
+        <li class="page-item {{ 'disabled' if not pagination.has_prev else '' }}">
+          <a class="page-link" href="?page={{ pagination.prev_num or 1 }}&search={{ current_filters.search or '' }}&state={{ current_filters.state or '' }}&city={{ current_filters.city or '' }}" 
+             aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+        
+        <!-- Páginas numeradas -->
+        {% set start_page = [1, pagination.page - 2]|max %}
+        {% set end_page = [pagination.pages, pagination.page + 2]|min %}
+        
+        {% if start_page > 1 %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1&search={{ current_filters.search or '' }}&state={{ current_filters.state or '' }}&city={{ current_filters.city or '' }}">1</a>
+          </li>
+          {% if start_page > 2 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+        {% endif %}
+        
+        {% for page_num in range(start_page, end_page + 1) %}
+          <li class="page-item {{ 'active' if page_num == pagination.page else '' }}">
+            <a class="page-link" href="?page={{ page_num }}&search={{ current_filters.search or '' }}&state={{ current_filters.state or '' }}&city={{ current_filters.city or '' }}">{{ page_num }}</a>
+          </li>
+        {% endfor %}
+        
+        {% if end_page < pagination.pages %}
+          {% if end_page < pagination.pages - 1 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ pagination.pages }}&search={{ current_filters.search or '' }}&state={{ current_filters.state or '' }}&city={{ current_filters.city or '' }}">{{ pagination.pages }}</a>
+          </li>
+        {% endif %}
+        
+        <!-- Página siguiente -->
+        <li class="page-item {{ 'disabled' if not pagination.has_next else '' }}">
+          <a class="page-link" href="?page={{ pagination.next_num or pagination.pages }}&search={{ current_filters.search or '' }}&state={{ current_filters.state or '' }}&city={{ current_filters.city or '' }}" 
+             aria-label="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/unified_search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/technical_service.js') }}"></script>
+{% endblock %}

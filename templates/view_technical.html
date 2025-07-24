@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}Mis Tickets Asignados{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('tickets.static', filename='css/technical_service.css') }}">
+<link rel="stylesheet" href="{{ url_for('tickets.static', filename='css/unified_search.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <!-- Fila del título y usuario -->
+  <div class="row mb-2 align-items-center">
+    <div class="col-md-6">
+      <h2 class="mb-0">
+        <i class="fas fa-ticket-alt text-primary me-2"></i>Mis Tickets Asignados
+      </h2>
+    </div>
+    <!-- Información del usuario logueado -->
+    <div class="col-md-6 d-flex justify-content-end">
+      <div class="d-flex align-items-center bg-light rounded-pill px-3 py-1 shadow-sm">
+        <i class="fas fa-user-circle text-primary me-2 fs-4"></i>
+        <div>
+          <small class="text-muted d-block">Técnico</small>
+          <span class="fw-bold">Técnico</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila de controles -->
+  <div class="row">
+    <div class="col d-flex justify-content-end align-items-center gap-2">
+      <!-- Barra de búsqueda compacta (IDÉNTICA A TECHNICAL_SERVICE) -->
+      <div class="input-group" style="max-width: 250px;">
+        <span class="input-group-text bg-light">
+          <i class="fas fa-search text-muted"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Buscar tickets..." id="searchInput"
+          aria-label="Buscar tickets">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Filtros rápidos -->
+<div class="card mb-3 border-0 shadow-sm">
+  <div class="card-body py-2">
+    <div class="row">
+      <div class="col-12 mb-2">
+        <div class="d-flex gap-2 flex-wrap justify-content-center">
+          {% for status in ['Todos', 'Asignado', 'En proceso', 'En Revision'] %}
+          <input type="radio" class="btn-check" name="filterStatus" id="btn{{ status }}" {% if (current_filters.state == status) or (status=='Todos' and not current_filters.state) %}checked{% endif %}>
+          <label class="btn btn-outline-secondary {% if (current_filters.state == status) or (status=='Todos' and not current_filters.state) %}active{% endif %}" for="btn{{ status }}">
+            <i class="fas fa-{% if status == 'Todos' %}list{% elif status == 'Asignado' %}user-check{% elif status == 'En proceso' %}spinner{% else %}check-circle{% endif %} me-1"></i>
+            {{ status }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="d-flex gap-2 flex-wrap justify-content-center">
+          <input type="radio" class="btn-check" name="filterCity" id="btnAllCities" {% if not current_filters.city or current_filters.city == 'Todas las ciudades' %}checked{% endif %}>
+          <label class="btn btn-outline-secondary {% if not current_filters.city or current_filters.city == 'Todas las ciudades' %}active{% endif %}" for="btnAllCities">
+            <i class="fas fa-globe me-1"></i>
+            Todas las ciudades
+          </label>
+          <input type="radio" class="btn-check" name="filterCity" id="btnMedellin" {% if current_filters.city == 'Medellín' %}checked{% endif %}>
+          <label class="btn btn-outline-secondary {% if current_filters.city == 'Medellín' %}active{% endif %}" for="btnMedellin">
+            <i class="fas fa-city me-1"></i>
+            Medellín
+          </label>
+          <input type="radio" class="btn-check" name="filterCity" id="btnBogota" {% if current_filters.city == 'Bogotá' %}checked{% endif %}>
+          <label class="btn btn-outline-secondary {% if current_filters.city == 'Bogotá' %}active{% endif %}" for="btnBogota">
+            <i class="fas fa-city me-1"></i>
+            Bogotá
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Tabla de tickets -->
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+      <div>
+        <h3>Mis tickets asignados</h3>
+      </div>
+      <div class="ms-3">
+
+      </div>
+    </div>
+    <span class="badge bg-primary rounded-pill py-2 px-3">
+      <i class="fas fa-ticket-alt me-2"></i>
+      Tickets asignados: <strong>{{ pagination.total if pagination else 0 }}</strong>
+    </span>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="ticketsTable">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">#</th>
+            <th>Referencia</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Tipo de Servicio</th>
+            <th>Problemas</th>
+            <th>Ciudad</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="ticketsTableBody">
+          {% include 'partials/view_technical_table_rows.html' %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if pagination %}
+  <div class="card-footer bg-white py-3 d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+      <small class="text-muted">
+        Mostrando {{ (pagination.page - 1) * pagination.per_page + 1 }} - 
+        {{ pagination.page * pagination.per_page if pagination.page * pagination.per_page <= pagination.total else pagination.total }} 
+        de <strong>{{ pagination.total }}</strong> tickets
+      </small>
+    </div>
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Paginación de tickets">
+      <ul class="pagination pagination-sm mb-0">
+        <!-- Página anterior -->
+        <li class="page-item {{ 'disabled' if not pagination.has_prev else '' }}">
+          <a class="page-link" href="?page={{ pagination.prev_num }}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}{% if current_filters.state %}&state={{ current_filters.state }}{% endif %}{% if current_filters.city %}&city={{ current_filters.city }}{% endif %}" 
+             {{ 'tabindex="-1"' if not pagination.has_prev else '' }}>
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+        
+        <!-- Páginas -->
+        {% for page_num in range(1, pagination.pages + 1) %}
+          {% if page_num <= 2 or page_num > pagination.pages - 2 or (page_num >= pagination.page - 1 and page_num <= pagination.page + 1) %}
+            <li class="page-item {{ 'active' if page_num == pagination.page else '' }}">
+              <a class="page-link" href="?page={{ page_num }}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}{% if current_filters.state %}&state={{ current_filters.state }}{% endif %}{% if current_filters.city %}&city={{ current_filters.city }}{% endif %}">{{ page_num }}</a>
+            </li>
+          {% elif page_num == 3 or page_num == pagination.pages - 2 %}
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+        
+        <!-- Página siguiente -->
+        <li class="page-item {{ 'disabled' if not pagination.has_next else '' }}">
+          <a class="page-link" href="?page={{ pagination.next_num }}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}{% if current_filters.state %}&state={{ current_filters.state }}{% endif %}{% if current_filters.city %}&city={{ current_filters.city }}{% endif %}" 
+             {{ 'tabindex="-1"' if not pagination.has_next else '' }}>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Scripts de la página - jQuery ya está cargado aquí -->
+<script>
+// Verificar que jQuery esté disponible antes de usarlo
+(function() {
+    function waitForJQuery() {
+        if (typeof $ === 'undefined' || typeof jQuery === 'undefined') {
+            setTimeout(waitForJQuery, 50);
+            return;
+        }
+        
+        $(document).ready(function() {
+            // Debug info en consola
+            console.log('🔍 Debug Info:');
+            console.log('Técnico:', '{{ debug_info.technician_name if debug_info }}');
+            console.log('Cédula:', '{{ debug_info.technician_cedula if debug_info }}');
+            console.log('Total tickets encontrados:', {{ debug_info.total_tickets_found if debug_info else 0 }});
+            console.log('Tickets en página actual:', {{ tickets|length }});
+            console.log('Paginación:', {{ pagination|tojson if pagination else '{}' }});
+        });
+    }
+    
+    waitForJQuery();
+})();
+</script>
+<script src="{{ url_for('tickets.static', filename='js/unified_search.js') }}"></script>
+<script src="{{ url_for('tickets.static', filename='js/view_technical.js') }}"></script>
+{% endblock %}

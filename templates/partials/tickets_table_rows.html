@@ -1,0 +1,71 @@
+<!-- Partial template para filas de tickets (usado en requests AJAX) -->
+{% for ticket in tickets %}
+<tr class="align-middle" data-status="{{ ticket.state }}" data-city="{{ ticket.city }}" data-ticket-id="{{ ticket.id_ticket }}">
+    <td class="ps-2 fw-bold">#{{ ticket.id_ticket }}</td>
+    <td>
+        {{ ticket.document_client or 'N/A' }}
+    </td>
+    <td>
+        {% if ticket.technical_name %}
+        {{ ticket.technical_name.replace('.', ' ') | title }}
+        {% else %}
+        <span class="badge bg-secondary">Sin asignar</span>
+        {% endif %}
+    </td>
+
+    <td>
+        <select class="form-select form-select-sm status-select" data-ticket-id="{{ ticket.id_ticket }}" data-original-state="{{ ticket.state }}">
+            <option value="Sin asignar" {% if ticket.state=='Sin asignar' %}selected{% endif %}>Sin asignar</option>
+            <option value="Asignado" {% if ticket.state=='Asignado' %}selected{% endif %}>Asignado</option>
+            <option value="En proceso" {% if ticket.state=='En proceso' %}selected{% endif %}>En proceso</option>
+            <option value="En Revision" {% if ticket.state=='En Revision' %}selected{% endif %}>En Revision</option>
+            <option value="Terminado" {% if ticket.state=='Terminado' %}selected{% endif %}>Terminado</option>
+        </select>
+    </td>
+
+    <td>
+        <span class="badge {% if ticket.priority == 'Alta' %}bg-danger{% elif ticket.priority == 'Media' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+            {{ ticket.priority }}
+        </span>
+    </td>
+
+    <td class="text-end">${{ "{:,.0f}".format(ticket.service_value or 0).replace(',', '.') }}</td>
+    <td class="text-end">${{ "{:,.0f}".format(ticket.spare_value or 0).replace(',', '.') }}</td>
+    <td class="text-end">
+        <span class="badge bg-primary fs-6">${{ "{:,.0f}".format(ticket.total or 0).replace(',', '.') }}</span>
+    </td>
+    
+    <td>
+        <span class="badge bg-secondary">{{ ticket.city }}</span>
+    </td>
+
+    <td class="text-center">
+        <div class="btn-group btn-group-sm">
+            <!-- Botón para Editar Ticket -->
+            <form action="{{ url_for('technical_service.edit_ticket', ticket_id=ticket.id_ticket) }}" method="get" style="display:inline-block;">
+                <button type="submit" class="btn btn-sm btn-outline-secondary edit-ticket-btn" 
+                        {% if ticket.state == 'Terminado' %}disabled title="No se puede editar un ticket en estado Terminado"{% endif %}>
+                    <i class="fas fa-edit"></i>
+                </button>
+            </form>
+
+            <!-- Botón para Ver Detalle Ticket -->
+            <form action="{{ url_for('technical_service.view_detail_ticket', ticket_id=ticket.id_ticket) }}" method="get" style="display:inline-block;">
+                <button type="submit" class="btn btn-sm btn-outline-info">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </form>
+        </div>
+    </td>
+</tr>
+{% else %}
+<tr id="noResultsRow">
+    <td colspan="10" class="text-center py-5">
+        <i class="fas fa-ticket-alt fa-3x mb-3 text-muted"></i>
+        <p class="text-muted">No hay tickets que coincidan con los filtros aplicados.</p>
+        <a href="{{ url_for('tickets.technical_service.create_ticket') }}" class="btn btn-secondary">
+            <i class="fas fa-plus me-1 text-white"></i> Crear nuevo ticket
+        </a>
+    </td>
+</tr>
+{% endfor %} 
