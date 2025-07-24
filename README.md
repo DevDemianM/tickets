@@ -108,4 +108,23 @@ tickets/
 
 ---
 
+## 📝 Notas sobre Endpoints y Uso en Plantillas
+
+- Los endpoints en Flask deben llamarse según el nombre del blueprint registrado, por ejemplo:
+  - Correcto: `url_for('warranty.create_warranty')`
+  - Incorrecto: `url_for('tickets.warranty.create_warranty')`
+- Si usas un blueprint llamado `internal_repair`, el endpoint será `internal_repair.<nombre_funcion>`.
+- Si ves un error como:
+  ```
+  werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'tickets.warranty.create_warranty'. Did you mean 'warranty.create_warranty' instead?
+  ```
+  Debes corregir el nombre del endpoint en tu plantilla.
+
+**Ejemplo correcto en Jinja2:**
+```jinja
+<a href="{{ url_for('warranty.create_warranty') }}">Crear garantía</a>
+```
+
+---
+
 *Documentación actualizada para la versión 2.1.0 - Enero 2025* 
