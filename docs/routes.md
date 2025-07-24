@@ -482,6 +482,13 @@ def health_check():
     return {"status": "healthy", "timestamp": datetime.now()}
 ```
 
+> ⚠️ **Nota importante sobre endpoints:**
+> Al usar `url_for` en plantillas, asegúrate de emplear el nombre del blueprint registrado, por ejemplo:
+> - Correcto: `url_for('internal_repair.create_ticketsRI')`
+> - Incorrecto: `url_for('tickets.internal_repair.create_ticketsRI')`
+
+(Reemplazar en todos los ejemplos de endpoints el prefijo 'tickets.' por el nombre real del blueprint, como 'warranty', 'internal_repair', etc.)
+
 ---
 
 *Documentación del módulo Routes - Sistema de Tickets* 
