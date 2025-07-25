@@ -2,11 +2,6 @@
 
 ## 📋 Información General
 
-**Versión:** 2.1.0  
-**Última actualización:** Enero 2025  
-**Autor:** Equipo de Desarrollo Centralizado  
-**Estado:** Producción  
-
 ---
 
 ## 🚀 Proyecto Independiente y Desplegable
@@ -124,7 +119,5 @@ tickets/
 ```jinja
 <a href="{{ url_for('warranty.create_warranty') }}">Crear garantía</a>
 ```
-
----
 
 *Documentación actualizada para la versión 2.1.0 - Enero 2025* 
