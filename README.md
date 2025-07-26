@@ -2,6 +2,7 @@
 
 <div align="center">
 
+<<<<<<< HEAD
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.1.1-green.svg)
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0.41-orange.svg)
@@ -14,6 +15,8 @@
 
 </div>
 
+=======
+>>>>>>> 8a4e7ee1083a20b8ff5323194811883bff7e2805
 ---
 
 ## 📋 Tabla de Contenidos
